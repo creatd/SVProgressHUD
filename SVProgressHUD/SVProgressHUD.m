@@ -114,64 +114,164 @@ static void(^_callback)(void);
 #pragma mark - Show Methods
 
 + (void)show {
-    [[self sharedView] showProgress:-1 status:nil maskType:SVProgressHUDMaskTypeNone];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showProgress:-1 status:nil maskType:SVProgressHUDMaskTypeNone];
+        });
+    }
+    else {
+        [[self sharedView] showProgress:-1 status:nil maskType:SVProgressHUDMaskTypeNone];
+    }
 }
 
 + (void)showWithStatus:(NSString *)status {
-    [[self sharedView] showProgress:-1 status:status maskType:SVProgressHUDMaskTypeNone];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showProgress:-1 status:status maskType:SVProgressHUDMaskTypeNone];
+        });
+    }
+    else {
+        [[self sharedView] showProgress:-1 status:status maskType:SVProgressHUDMaskTypeNone];
+    }
 }
 
 + (void)showWithMaskType:(SVProgressHUDMaskType)maskType {
-    [[self sharedView] showProgress:-1 status:nil maskType:maskType];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showProgress:-1 status:nil maskType:maskType];
+        });
+    }
+    else {
+        [[self sharedView] showProgress:-1 status:nil maskType:maskType];
+    }
 }
 
 + (void)showWithStatus:(NSString*)status maskType:(SVProgressHUDMaskType)maskType {
-    [[self sharedView] showProgress:-1 status:status maskType:maskType];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showProgress:-1 status:status maskType:maskType];
+        });
+    }
+    else {
+        [[self sharedView] showProgress:-1 status:status maskType:maskType];
+    }
 }
 
 + (void)showProgress:(float)progress {
-    [[self sharedView] showProgress:progress status:nil maskType:SVProgressHUDMaskTypeNone];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showProgress:progress status:nil maskType:SVProgressHUDMaskTypeNone];
+        });
+    }
+    else {
+        [[self sharedView] showProgress:progress status:nil maskType:SVProgressHUDMaskTypeNone];
+    }
 }
 
 + (void)showProgress:(float)progress status:(NSString *)status {
-    [[self sharedView] showProgress:progress status:status maskType:SVProgressHUDMaskTypeNone];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showProgress:progress status:status maskType:SVProgressHUDMaskTypeNone];
+        });
+    }
+    else {
+        [[self sharedView] showProgress:progress status:status maskType:SVProgressHUDMaskTypeNone];
+    }
 }
 
 + (void)showProgress:(float)progress status:(NSString *)status maskType:(SVProgressHUDMaskType)maskType {
-    [[self sharedView] showProgress:progress status:status maskType:maskType];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showProgress:progress status:status maskType:maskType];
+        });
+    }
+    else {
+        [[self sharedView] showProgress:progress status:status maskType:maskType];
+    }
 }
 
 #pragma mark - Show then dismiss methods
 
 + (void)showSuccessWithStatus:(NSString *)string {
-    [self showSuccessWithStatus:string duration:1.0f];  // Default to 1s
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showSuccessWithStatus:string duration:1.0f];  // Default to 1s
+        });
+    }
+    else {
+        [self showSuccessWithStatus:string duration:1.0f];  // Default to 1s
+    }
 }
 
 + (void)showErrorWithStatus:(NSString *)string {
-    [self showErrorWithStatus:string duration:1.0f];    // Default to 1s
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showErrorWithStatus:string duration:1.0f];    // Default to 1s
+        });
+    }
+    else {
+        [self showErrorWithStatus:string duration:1.0f];    // Default to 1s
+    }
 }
 
 + (void)showSuccessWithStatus:(NSString *)string duration:(float)duration {
-    [[self sharedView] showImage:[[self sharedView] hudSuccessImage] status:string duration:duration];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showImage:[[self sharedView] hudSuccessImage] status:string duration:duration];
+        });
+    }
+    else {
+        [[self sharedView] showImage:[[self sharedView] hudSuccessImage] status:string duration:duration];
+    }
 }
 
 + (void)showErrorWithStatus:(NSString *)string duration:(float)duration {
-    [[self sharedView] showImage:[[self sharedView] hudErrorImage] status:string duration:duration];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showImage:[[self sharedView] hudErrorImage] status:string duration:duration];
+        });
+    }
+    else {
+        [[self sharedView] showImage:[[self sharedView] hudErrorImage] status:string duration:duration];
+    }
 }
 
 + (void)showSuccessWithStatus:(NSString *)string duration:(float)duration completion:(void (^)(void))callback   {
-    _callback = callback;
-    [[self sharedView] showImage:[[self sharedView] hudSuccessImage] status:string duration:duration];
+        _callback = callback;
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showImage:[[self sharedView] hudSuccessImage] status:string duration:duration];
+        });
+    }
+    else {
+        [[self sharedView] showImage:[[self sharedView] hudSuccessImage] status:string duration:duration];
+    }
 }
 
 + (void)showErrorWithStatus:(NSString *)string duration:(float)duration completion:(void (^)(void))callback {
     _callback = callback;
-    [[self sharedView] showImage:[[self sharedView] hudErrorImage] status:string duration:duration];
+
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showImage:[[self sharedView] hudErrorImage] status:string duration:duration];
+        });
+    }
+    else {
+        [[self sharedView] showImage:[[self sharedView] hudErrorImage] status:string duration:duration];
+    }
 }
 
 + (void)showImage:(UIImage *)image status:(NSString *)string {
     NSTimeInterval displayInterval = [[SVProgressHUD sharedView] displayDurationForString:string];
-    [[self sharedView] showImage:image status:string duration:displayInterval];
+
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self sharedView] showImage:image status:string duration:displayInterval];
+        });
+    }
+    else {
+        [[self sharedView] showImage:image status:string duration:displayInterval];
+    }
 }
 
 
@@ -184,8 +284,17 @@ static void(^_callback)(void);
 }
 
 + (void)dismiss {
-    if ([self isVisible]) {
-        [[self sharedView] dismiss];
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self isVisible]) {
+                [[self sharedView] dismiss];
+            }
+        });
+    }
+    else {
+        if ([self isVisible]) {
+            [[self sharedView] dismiss];
+        }
     }
 }
 
