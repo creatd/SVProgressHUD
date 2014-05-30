@@ -59,6 +59,9 @@ typedef NSUInteger SVProgressHUDMaskType;
 + (void)showErrorWithStatus:(NSString *)string;
 + (void)showSuccessWithStatus:(NSString *)string duration:(float)duration;
 + (void)showErrorWithStatus:(NSString *)string duration:(float)duration;
+/**
+  IMPORTANT NOTE- Callback is a static var which means it will get called for the first dismissed SVProgressHUD (not necessarily the caller)
+ */ 
 + (void)showSuccessWithStatus:(NSString *)string duration:(float)duration completion:(void (^)(void))callback;
 + (void)showErrorWithStatus:(NSString *)string duration:(float)duration completion:(void (^)(void))callback;
 + (void)showImage:(UIImage*)image status:(NSString*)status; // use 28x28 white pngs

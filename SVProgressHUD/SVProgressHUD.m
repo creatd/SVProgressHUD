@@ -734,8 +734,9 @@ static void(^_callback)(void);
                                [rootController setNeedsStatusBarAppearanceUpdate];
                              }
 #endif
-                             if(_callback) {
+                             if (_callback) {
                                  _callback();
+                                 _callback = nil;
                              }
                              // uncomment to make sure UIWindow is gone from app.windows
                              //NSLog(@"%@", [UIApplication sharedApplication].windows);
