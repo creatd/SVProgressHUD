@@ -54,6 +54,13 @@ typedef NSUInteger SVProgressHUDMaskType;
 // stops the activity indicator, shows a glyph + status, and dismisses HUD 1s later
 + (void)showSuccessWithStatus:(NSString*)string;
 + (void)showErrorWithStatus:(NSString *)string;
++ (void)showSuccessWithStatus:(NSString *)string duration:(CGFloat)duration;
++ (void)showErrorWithStatus:(NSString *)string duration:(CGFloat)duration;
+/**
+ IMPORTANT NOTE- Callback is a static var which means it will get called for the first dismissed SVProgressHUD (not necessarily the caller)
+ */
++ (void)showSuccessWithStatus:(NSString *)string duration:(CGFloat)duration completion:(void (^)(void))callback;
++ (void)showErrorWithStatus:(NSString *)string duration:(CGFloat)duration completion:(void (^)(void))callback;
 + (void)showImage:(UIImage*)image status:(NSString*)status; // use 28x28 white pngs
 
 + (void)setOffsetFromCenter:(UIOffset)offset;

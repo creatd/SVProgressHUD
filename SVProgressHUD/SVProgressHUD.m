@@ -76,6 +76,8 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 
 @implementation SVProgressHUD
 
+static void(^_callback)(void);
+
 + (SVProgressHUD*)sharedView {
     static dispatch_once_t once;
     static SVProgressHUD *sharedView;
@@ -126,43 +128,164 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 }
 
 + (void)showWithStatus:(NSString *)status {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showWithStatus:status];
+        });
+        return;
+    }
     [[self sharedView] showProgress:-1 status:status maskType:SVProgressHUDMaskTypeNone];
 }
 
 + (void)showWithMaskType:(SVProgressHUDMaskType)maskType {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showWithMaskType:maskType];
+        });
+        return;
+    }
     [[self sharedView] showProgress:-1 status:nil maskType:maskType];
 }
 
 + (void)showWithStatus:(NSString*)status maskType:(SVProgressHUDMaskType)maskType {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showWithStatus:status maskType:maskType];
+        });
+        return;
+    }
+    
     [[self sharedView] showProgress:-1 status:status maskType:maskType];
 }
 
 + (void)showProgress:(float)progress {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showProgress:progress];
+        });
+        return;
+    }
+    
     [[self sharedView] showProgress:progress status:nil maskType:SVProgressHUDMaskTypeNone];
 }
 
 + (void)showProgress:(float)progress status:(NSString *)status {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showProgress:progress status:status];
+        });
+        return;
+    }
+    
     [[self sharedView] showProgress:progress status:status maskType:SVProgressHUDMaskTypeNone];
 }
 
 + (void)showProgress:(float)progress status:(NSString *)status maskType:(SVProgressHUDMaskType)maskType {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showProgress:progress status:status maskType:maskType];
+        });
+        return;
+    }
+    
     [[self sharedView] showProgress:progress status:status maskType:maskType];
 }
 
 #pragma mark - Show then dismiss methods
 
 + (void)showSuccessWithStatus:(NSString *)string {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showSuccessWithStatus:string];
+        });
+        return;
+    }
+    
     [self sharedView];
     [self showImage:SVProgressHUDSuccessImage status:string];
 }
 
++ (void)showSuccessWithStatus:(NSString *)string duration:(CGFloat)duration {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showSuccessWithStatus:string duration:duration];
+        });
+        return;
+    }
+    
+    [self sharedView];
+    [self showImage:SVProgressHUDSuccessImage status:string duration:duration];
+}
+
 + (void)showErrorWithStatus:(NSString *)string {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showErrorWithStatus:string];
+        });
+        return;
+    }
+ 
     [self sharedView];
     [self showImage:SVProgressHUDErrorImage status:string];
 }
 
++ (void)showErrorWithStatus:(NSString *)string duration:(CGFloat)duration {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showErrorWithStatus:string duration:duration];
+        });
+        return;
+    }
+    
+    [self sharedView];
+    [self showImage:SVProgressHUDErrorImage status:string duration:duration];
+}
+
++ (void)showSuccessWithStatus:(NSString *)string duration:(CGFloat)duration completion:(void (^)(void))callback {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showSuccessWithStatus:string duration:duration completion:callback];
+        });
+        return;
+    }
+    
+    _callback = callback;
+    [self.class showSuccessWithStatus:string duration:duration];
+}
+
++ (void)showErrorWithStatus:(NSString *)string duration:(CGFloat)duration completion:(void (^)(void))callback {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showErrorWithStatus:string duration:duration completion:callback];
+        });
+        return;
+    }
+    
+    _callback = callback;
+    [self.class showErrorWithStatus:string duration:duration];
+}
+
 + (void)showImage:(UIImage *)image status:(NSString *)string {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showImage:image status:string];
+        });
+        return;
+    }
+    
     NSTimeInterval displayInterval = [[SVProgressHUD sharedView] displayDurationForString:string];
+    [[self sharedView] showImage:image status:string duration:displayInterval];
+}
+
++ (void)showImage:(UIImage *)image status:(NSString *)string duration:(CGFloat)duration {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class showImage:image status:string duration:duration];
+        });
+        return;
+    }
+    
+    NSTimeInterval displayInterval = duration;
     [[self sharedView] showImage:image status:string duration:displayInterval];
 }
 
@@ -176,6 +299,13 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 }
 
 + (void)dismiss {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.class dismiss];
+        });
+        return;
+    }
+    
     if ([self isVisible]) {
         [[self sharedView] dismiss];
     }
@@ -637,6 +767,12 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
                              if ([rootController respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
                                  [rootController setNeedsStatusBarAppearanceUpdate];
                              }
+
+                             if (_callback) {
+                                 _callback();
+                                 _callback = nil;
+                             }
+                             
                              // uncomment to make sure UIWindow is gone from app.windows
                              //NSLog(@"%@", [UIApplication sharedApplication].windows);
                              //NSLog(@"keyWindow = %@", [UIApplication sharedApplication].keyWindow);
