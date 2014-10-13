@@ -47,7 +47,6 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 
 @property (nonatomic, readwrite) CGFloat progress;
 @property (nonatomic, readwrite) NSUInteger activityCount;
-@property (nonatomic, strong) SVRadialGradientLayer *backgroundGradientLayer;
 @property (nonatomic, strong) CAShapeLayer *backgroundRingLayer;
 @property (nonatomic, strong) CAShapeLayer *ringLayer;
 
@@ -638,28 +637,6 @@ static void(^_callback)(void);
 
 - (void)showProgress:(float)progress status:(NSString*)string maskType:(SVProgressHUDMaskType)hudMaskType {
     
-    self.maskType = hudMaskType;
-    switch (self.maskType) {
-            
-        case SVProgressHUDMaskTypeBlack: {
-            self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.25];
-            break;
-        }
-            
-        case SVProgressHUDMaskTypeGradient: {
-			self.backgroundGradientLayer = [SVRadialGradientLayer layer];
-			self.backgroundGradientLayer.frame = self.bounds;
-			CGPoint gradientCenter = self.center;
-			gradientCenter.y = (self.bounds.size.height - self.visibleKeyboardHeight) / 2;
-			self.backgroundGradientLayer.gradientCenter = gradientCenter;
-			[self.backgroundGradientLayer setNeedsDisplay];
-			
-			[self.layer addSublayer:self.backgroundGradientLayer];
-			break;
-        }
-    }
-	
-
     if(!self.overlayView.superview){
         NSEnumerator *frontToBackWindows = [[[UIApplication sharedApplication]windows]reverseObjectEnumerator];
         
@@ -675,6 +652,7 @@ static void(^_callback)(void);
     
     self.fadeOutTimer = nil;
     self.imageView.hidden = YES;
+    self.maskType = hudMaskType;
     self.progress = progress;
     
     self.stringLabel.text = string;
